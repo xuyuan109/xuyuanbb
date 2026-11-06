@@ -112,6 +112,47 @@ body{ margin:0; background:#121212; }
     z-index: 999;
 }
 .video_modal.ON { display: flex; align-items: center; justify-content: center; }
+/* 第四排大图查看器 */
+.img_modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+}
+.img_modal.ON { display: flex; }
+.img_modal_backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+}
+.img_modal_pic {
+    position: relative;
+    z-index: 2;
+    max-width: 94vw;
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+.img_modal_close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    z-index: 3;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 28px;
+    line-height: 1;
+    padding: 4px 8px;
+    cursor: pointer;
+    opacity: 0.85;
+}
 .video_modal_backdrop {
     position: absolute;
     inset: 0;
@@ -796,7 +837,7 @@ body{ margin:0; background:#121212; }
 
         <!-- 第四排新增布局（含便签） -->
         <div class="Mg_fourth_row_box">
-            <img class="Mm_fourth_row_bg" src="row4.jpg" alt="Fourth Row Image">
+            <img class="Mm_fourth_row_bg" id="row4Img" src="row4.png" alt="Fourth Row Image" style="cursor: zoom-in;">
             <div class="Ks_sticky_note">
               <div class="Ks_note_title">WIP / 待填坑</div>
               <div class="Ks_note_list">
@@ -955,6 +996,13 @@ body{ margin:0; background:#121212; }
                 </div>
             </div>
         </div>
+
+        <!-- 第四排大图查看器 -->
+        <div class="img_modal" id="row4Modal">
+            <div class="img_modal_backdrop" id="row4Backdrop"></div>
+            <button class="img_modal_close" id="row4Close">×</button>
+            <img class="img_modal_pic" id="row4Big" src="row4.png" alt="">
+        </div>
     </section>
 
     <!-- ============ 视图：一些调色（放图片） ============ -->
@@ -1060,6 +1108,29 @@ body{ margin:0; background:#121212; }
     modal.querySelector('.video_modal_backdrop').addEventListener('click', closeModal);
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeModal();
+    });
+})();
+
+/* 第四排图片：点击查看完整大图（不裁切） */
+(function () {
+    var img = document.getElementById('row4Img');
+    var modal = document.getElementById('row4Modal');
+    var big = document.getElementById('row4Big');
+    var closeBtn = document.getElementById('row4Close');
+    var backdrop = document.getElementById('row4Backdrop');
+    if (!img || !modal) return;
+
+    function open() {
+        if (big) big.src = img.getAttribute('src');
+        modal.classList.add('ON');
+    }
+    function close() { modal.classList.remove('ON'); }
+
+    img.addEventListener('click', open);
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (backdrop) backdrop.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') close();
     });
 })();
 
